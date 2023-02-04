@@ -1,0 +1,18 @@
+apiVersion: dapr.io/v1alpha1
+kind: Component
+metadata:
+  name: statestore
+spec:
+  type: state.aws.dynamodb
+  version: v1
+  metadata:
+    - name: table
+      value: "dapr_store"
+    - name: endpoint
+      value: dynamodb.default.svc.cluster.local:8000
+    - name: region
+      value: "eu-west-1"
+    - name: accessKey
+      value: "key"
+    - name: secretKey
+      value: "key2"

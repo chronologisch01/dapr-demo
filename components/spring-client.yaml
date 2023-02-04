@@ -1,0 +1,46 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: spring-client
+  labels:
+    app: spring
+spec:
+  selector:
+    app: spring
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+  type: LoadBalancer
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spring-client
+  labels:
+    app: spring
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: spring
+  template:
+    metadata:
+      labels:
+        app: spring
+      annotations:
+        dapr.io/enabled: "true"
+        dapr.io/app-id: "spring-client"
+        dapr.io/enable-api-logging: "true"
+        dapr.io/app-port: "8080"
+    spec:
+      containers:
+        - name: spring
+          image: spring-client
+          env:
+            - name: APP_PORT
+              value: "8080"
+          ports:
+            - containerPort: 8080
+          imagePullPolicy: Never

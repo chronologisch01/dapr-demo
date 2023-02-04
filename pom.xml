@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.7.5</version>
+		<relativePath/> <!-- lookup parent from repository -->
+	</parent>
+	<groupId>com.example</groupId>
+	<artifactId>dapr-demo</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>dapr-demo</name>
+	<description>Demo project for spring boot and dapr</description>
+	<properties>
+		<java.version>11</java.version>
+	</properties>
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>io.dapr</groupId>
+			<artifactId>dapr-sdk</artifactId>
+			<version>1.7.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>io.dapr</groupId>
+			<artifactId>dapr-sdk-actors</artifactId>
+			<version>1.7.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>io.dapr</groupId>
+			<artifactId>dapr-sdk-springboot</artifactId>
+			<version>1.7.1</version>
+		</dependency>
+
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>io.fabric8</groupId>
+				<artifactId>docker-maven-plugin</artifactId>
+				<version>0.39.1</version>
+				<configuration>
+					<autoCreateCustomNetworks>true</autoCreateCustomNetworks>
+					<images>
+<!--						<image>-->
+<!--							<name>daprio/dapr</name>-->
+<!--							<run>-->
+<!--								<ports>-->
+<!--									<port>50006:50006</port>-->
+<!--								</ports>-->
+<!--								<cmd>./placement &#45;&#45;port 50006</cmd>-->
+<!--								<containerNamePattern>dapr-placement</containerNamePattern>-->
+<!--								<network>-->
+<!--									<mode>custom</mode>-->
+<!--									<name>hello-dapr</name>-->
+<!--								</network>-->
+<!--							</run>-->
+
+<!--						</image>-->
+
+						<image>
+							<name>redis:alpine</name>
+							<run>
+<!--								<ports>-->
+<!--									<port>6380:6379</port>-->
+<!--								</ports>-->
+								<network>
+									<name>hello-dapr</name>
+								</network>
+								<containerNamePattern>redis</containerNamePattern>
+							</run>
+
+						</image>
+
+
+						<image>
+							<name>spring-client</name>
+							<build>
+								<dockerFileDir>${project.basedir}</dockerFileDir>
+
+							</build>
+							<run>
+								<ports>
+									<port>8080:8080</port>
+								</ports>
+								<containerNamePattern>spring-client</containerNamePattern>
+								<network>
+									<name>hello-dapr</name>
+								</network>
+							</run>
+						</image>
+
+
+						<image>
+							<name>daprio/dapr:edge</name>
+							<run>
+								<cmd>./daprd -app-id spring-client -placement-host-address placement:50006 -app-port 8080 -components-path /components</cmd>
+								<containerNamePattern>dapr-sidecar-spring-client</containerNamePattern>
+								<volumes>
+									<bind>
+										<volume>./components-local/:/components</volume>
+									</bind>
+								</volumes>
+<!--								<ports>-->
+<!--									<port>3000:3000</port>-->
+<!--								</ports>-->
+<!--								<network>-->
+<!--									<name>hello-dapr</name>-->
+<!--								</network>-->
+								<network>
+									<mode>container</mode>
+									<name>spring-client</name>
+								</network>
+							</run>
+						</image>
+					</images>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>
