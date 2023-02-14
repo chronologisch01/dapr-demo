@@ -7,4 +7,4 @@ spec:
   version: v1
   metadata:
     - name: connectionString
-      value: root:RbxmgRRQlZ@tcp(dapr-mysql.default.svc.cluster.local:3306)/
+      value: root:password@tcp(10.96.0.2:3306)/?allowNativePasswords=true

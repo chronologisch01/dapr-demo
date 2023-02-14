@@ -9,10 +9,10 @@ spec:
     - name: table
       value: "dapr_store"
     - name: endpoint
-      value: dynamodb.default.svc.cluster.local:8000
+      value: http://10.96.0.3:8000
     - name: region
-      value: "eu-west-1"
+      value: "eu-west-1" # Optional
     - name: accessKey
-      value: "key"
+      value: "AKIAIOSFODNN7EXAMPLE" # Optional
     - name: secretKey
-      value: "key2"
+      value: "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY" # Optional
